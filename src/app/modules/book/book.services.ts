@@ -2,6 +2,8 @@ import httpStatus from "http-status";
 import ApiError from "../../../errors/apiError";
 import { IBook } from "./book.interface";
 import { Book } from "./book.model";
+import { Wishlist } from "../wishlist/wishlist.model";
+import { ReadingList } from "../readinglist/readinglist.model";
 
 const addBook = async (bookData: IBook) => {
   const newBook = await Book.create(bookData);
@@ -25,6 +27,8 @@ const getSingleBook = async (id: string) => {
 
 const deleteBook = async (id: string) => {
   const book = await Book.findByIdAndDelete({ _id: id });
+  await Wishlist.deleteOne({ book: id });
+  await ReadingList.deleteOne({ book: id });
   return book;
 };
 
@@ -53,5 +57,5 @@ export const BookService = {
   getSingleBook,
   deleteBook,
   editBook,
-  addComment
+  addComment,
 };
